@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-
+  
   return (
     <nav className="p-4 bg-gray-900">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <div className="text-blue-400 text-lg font-bold">Portofolio</div>
+        <div className="text-2xl font-bold text-purple-400">Anime</div>
 
         {/* Menu desktop */}
         <ul className="hidden sm:flex gap-6 text-white">
@@ -18,9 +18,9 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <a href="#about" className="hover:text-blue-400 duration-300 ease-out">
-              About
-            </a>
+            <Link to="/anime" className="hover:text-blue-400 duration-300 ease-out">
+              Anime
+            </Link>
           </li>
           <li>
             <a href="#project" className="hover:text-blue-400 duration-300 ease-out">
@@ -66,9 +66,9 @@ export default function Navbar() {
           </li>
           <li>
             <a
-              href="#about" className="block px-2 py-1 hover:bg-blue-500 rounded" onClick={() => setIsOpen(false)}
+              to="/anime" className="block px-2 py-1 hover:bg-blue-500 rounded" onClick={() => setIsOpen(false)}
             >
-              About
+              Anime
             </a>
           </li>
           <li>
