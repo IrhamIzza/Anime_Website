@@ -10,7 +10,7 @@ export default function Home() {
   }
 
   async function getData2() {
-    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=10&filter=bypopularity");
+    const response = await fetch("https://api.jikan.moe/v4/top/manga?limit=10");
     const data = await response.json()
     setAnime2(data.data);   
   }
@@ -60,9 +60,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Anime List */}
+        {/* Top Manga List */}
         <section className="px-6 py-10">
-          <h3 className="text-2xl font-semibold mb-6">🔥 Popular Anime</h3>
+          <h3 className="text-2xl font-semibold mb-6">🔥 Top Manga</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {anime2.map((anime) => (
               <div
