@@ -4,34 +4,46 @@ export default function Anime() {
   const [anime, setAnime] = useState([]);
   const [anime2, setAnime2] = useState([]);
   const [anime3, setAnime3] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   async function getData() {
-    const response = await fetch(
-      "https://api.jikan.moe/v4/top/anime?limit=10"
-    );
-    const data = await response.json();
-    setAnime(data.data);
+    try {
+      setLoading(true);
+      const [res1, res2, res3] = await Promise.all([
+        fetch("https://api.jikan.moe/v4/top/anime?limit=10"),
+        fetch(
+          "https://api.jikan.moe/v4/top/anime?limit=10&filter=bypopularity"
+        ),
+        fetch(
+          "https://api.jikan.moe/v4/top/anime?limit=10&filter=upcoming"
+        ),
+      ]);
+
+      const data1 = await res1.json();
+      const data2 = await res2.json();
+      const data3 = await res3.json();
+      // set state
+      setAnime(data1.data);
+      setAnime2(data2.data);
+      setAnime3(data3.data);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  async function getData2() {
-    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=10&filter=bypopularity");
-    const data = await response.json()
-    setAnime2(data.data);   
-  }
-
-  async function getData3() {
-    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=10&filter=upcoming");
-    const data = await response.json()
-    setAnime3(data.data);   
-  }
   useEffect(() => {
     getData();
-    getData2();
-    getData3();
   }, []);
 
   return (
     <>
+      {loading && (
+        <div className="bg-black h-full w-full fixed z-10 flex items-center justify-center opacity-85">
+          <i className="ph ph-circle-notch animate-spin text-9xl text-white fixed z-20"></i>
+        </div>
+      )}
       <div className="bg-gray-900 text-white md:px-20 pt-2">
         {/* Anime List */}
         <section className="px-6 py-10">
