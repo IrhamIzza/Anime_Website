@@ -1,4 +1,5 @@
 import { use, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 export default function Home() {
   const [anime, setAnime] = useState([]);
   const [anime2, setAnime2] = useState([]);
@@ -11,8 +12,8 @@ export default function Home() {
 
   async function getData2() {
     const response = await fetch("https://api.jikan.moe/v4/top/manga?limit=10");
-    const data = await response.json()
-    setAnime2(data.data);   
+    const data = await response.json();
+    setAnime2(data.data);
   }
 
   useEffect(() => {
@@ -39,7 +40,14 @@ export default function Home() {
 
         {/* Anime List */}
         <section className="px-6 py-10">
-          <h3 className="text-2xl font-semibold mb-6">🔥 Top Anime</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-2xl font-semibold mb-6">🔥 Top Anime</h3>
+            <Link to="/anime">
+              <h3 className="text-md text-gray-400 font-semibold mb-6">
+                View All{" "}
+              </h3>
+            </Link>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 ">
             {anime.map((anime) => (
               <div
