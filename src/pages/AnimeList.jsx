@@ -31,7 +31,13 @@ export default function AnimeList() {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6 md:px-20">
+      {loading && (
+        <div className="flex justify-center items-center h-screen">
+          <i className="ph ph-circle-notch animate-spin text-6xl text-white"></i>
+        </div>
+      )}
 
+      {!loading && (
         <>
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold capitalize">{type} Anime</h1>
