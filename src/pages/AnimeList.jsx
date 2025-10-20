@@ -43,7 +43,7 @@ export default function AnimeList() {
             <h1 className="text-3xl font-bold capitalize">{type} Anime</h1>
             <Link
               to="/anime"
-              className="text-blue-400 hover:underline text-sm"
+              className="text-md text-gray-400 font-semibold hover:text-white transition"
             >
               ← Back
             </Link>
