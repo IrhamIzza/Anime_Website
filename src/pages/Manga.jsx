@@ -61,19 +61,18 @@ export default function Manga() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {manga.map((item) => (
-              <div
-                key={item.mal_id} // ✅ pakai mal_id (bukan id)
-                className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition"
-              >
-                <img
-                  src={item.images.jpg.image_url}
-                  alt={item.title}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-lg font-bold">{item.title}</h4>
-                  <p className="text-sm text-gray-400">{item.status}</p>
-                </div>
+              <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <Link to={`/manga/detail/${item.mal_id}`} key={item.mal_id}>
+                  <img
+                    src={item.images.jpg.image_url}
+                    alt={item.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-400">{item.status}</p>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
@@ -91,19 +90,18 @@ export default function Manga() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {manga2.map((item) => (
-              <div
-                key={item.mal_id}
-                className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition"
-              >
-                <img
-                  src={item.images.jpg.image_url}
-                  alt={item.title}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-lg font-bold">{item.title}</h4>
-                  <p className="text-sm text-gray-400">{item.status}</p>
-                </div>
+              <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <Link to={`/manga/detail/${item.mal_id}`} key={item.mal_id}>
+                  <img
+                    src={item.images.jpg.image_url}
+                    alt={item.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-400">{item.status}</p>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
@@ -121,19 +119,18 @@ export default function Manga() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {manga3.map((item) => (
-              <div
-                key={item.mal_id}
-                className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition"
-              >
-                <img
-                  src={item.images.jpg.image_url}
-                  alt={item.title}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-lg font-bold">{item.title}</h4>
-                  <p className="text-sm text-gray-400">{item.status}</p>
-                </div>
+              <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <Link to={`/manga/detail/${item.mal_id}`} key={item.mal_id}>
+                  <img
+                    src={item.images.jpg.image_url}
+                    alt={item.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-400">{item.status}</p>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
