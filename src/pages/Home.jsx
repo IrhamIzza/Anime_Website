@@ -5,13 +5,13 @@ export default function Home() {
   const [anime2, setAnime2] = useState([]);
 
   async function getData() {
-    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=10");
+    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=5");
     const data = await response.json();
     setAnime(data.data);
   }
 
   async function getData2() {
-    const response = await fetch("https://api.jikan.moe/v4/top/manga?limit=10");
+    const response = await fetch("https://api.jikan.moe/v4/top/manga?limit=5");
     const data = await response.json();
     setAnime2(data.data);
   }
@@ -43,26 +43,25 @@ export default function Home() {
           <div className="flex justify-between items-center">
             <h3 className="text-2xl font-semibold mb-6">🔥 Top Anime</h3>
             <Link to="/anime">
-              <h3 className="text-md text-gray-400 font-semibold mb-6">
+              <h3 className="text-md text-gray-400 font-semibold mb-6 hover:text-white transition">
                 View All{" "}
               </h3>
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 ">
-            {anime.map((anime) => (
-              <div
-                key={anime.id}
-                className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition"
-              >
-                <img
-                  src={anime.images.jpg.image_url}
-                  alt={anime.title}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4 ">
-                  <h4 className="text-lg font-bold">{anime.title}</h4>
-                  <p className="text-sm text-gray-400">{anime.status}</p>
-                </div>
+            {anime.map((item) => (
+              <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <Link to={`/anime/detail/${item.mal_id}`} key={item.mal_id}>
+                  <img
+                    src={item.images.jpg.image_url}
+                    alt={item.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-400">{item.status}</p>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
@@ -70,22 +69,28 @@ export default function Home() {
 
         {/* Top Manga List */}
         <section className="px-6 py-10">
-          <h3 className="text-2xl font-semibold mb-6">🔥 Top Manga</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-2xl font-semibold mb-6">🔥 Top Manga</h3>
+            <Link to="/manga">
+              <h3 className="text-md text-gray-400 font-semibold mb-6 hover:text-white transition">
+                View All{" "}
+              </h3>
+            </Link>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-            {anime2.map((anime) => (
-              <div
-                key={anime.id}
-                className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition"
-              >
-                <img
-                  src={anime.images.jpg.image_url}
-                  alt={anime.title}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-lg font-bold">{anime.title}</h4>
-                  <p className="text-sm text-gray-400">{anime.status}</p>
-                </div>
+            {anime2.map((item) => (
+              <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <Link to={`/anime/detail/${item.mal_id}`} key={item.mal_id}>
+                  <img
+                    src={item.images.jpg.image_url}
+                    alt={item.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-400">{item.status}</p>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
