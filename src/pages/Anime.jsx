@@ -7,6 +7,10 @@ export default function Anime() {
   const [anime3, setAnime3] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [searching, setSearching] = useState(false);
+
   async function getData() {
     try {
       setLoading(true);
@@ -34,7 +38,24 @@ export default function Anime() {
       setLoading(false);
     }
   }
-
+  async function handleSearch(e) {
+    e.preventDefault();
+    if (!search.trim()) return;
+    try {
+      setSearching(true);
+      const res = await fetch(
+        `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(
+          search
+        )}&limit=10`
+      );
+      const data = await res.json();
+      setSearchResult(data.data || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSearching(false);
+    }
+  }
   useEffect(() => {
     getData();
   }, []);
@@ -49,6 +70,73 @@ export default function Anime() {
             <i className="ph ph-circle-notch animate-spin text-6xl text-white"></i>
           </div>
         )}
+
+        {/*Search Bar */}
+        <form
+          onSubmit={handleSearch}
+          className="flex gap-3 items-center px-6 mt-6"
+        >
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search anime..."
+            className="flex-1 bg-gray-800 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold"
+          >
+            Search
+          </button>
+          {searchResult.length > 0 && (
+            <button
+              onClick={() => {
+                setSearch("");
+                setSearchResult([]);
+              }}
+              type="button"
+              className="text-gray-400 hover:text-white text-sm"
+            >
+              Clear
+            </button>
+          )}
+        </form>
+
+        {/* Hasil Search */}
+        {searchResult.length > 0 && (
+          <section className="px-6 mb-12">
+            <h3 className="text-2xl font-semibold mb-6">
+              🔎 Search Results for "{search}"
+            </h3>
+            {/* loading */}
+            {searching ? (
+              <div className="flex justify-center items-center py-10">
+                <i className="ph ph-circle-notch animate-spin text-5xl text-white"></i>
+              </div>
+            // result
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+                {searchResult.map((item) => (
+                  <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
+                    <Link to={`/anime/detail/${item.mal_id}`} key={item.mal_id}>
+                      <img
+                        src={item.images.jpg.image_url}
+                        alt={item.title}
+                        className="w-full h-64 object-cover"
+                      />
+                      <div className="p-4">
+                        <h4 className="text-lg font-bold">{item.title}</h4>
+                        <p className="text-sm text-gray-400">{item.status}</p>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* Top Anime */}
         <section className="px-6 py-10">
           <div className="flex justify-between items-center">
