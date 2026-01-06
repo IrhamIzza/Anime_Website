@@ -76,31 +76,36 @@ export default function Anime() {
           onSubmit={handleSearch}
           className="flex gap-3 items-center px-6 mt-6"
         >
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search anime..."
-            className="flex-1 bg-gray-800 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search anime..."
+              className="w-full bg-gray-800 text-white rounded-lg px-4 py-2 pr-10
+               focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            {search.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  setSearchResult([]);
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2
+                 text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            )}
+          </div>
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold"
           >
             Search
           </button>
-          {searchResult.length > 0 && (
-            <button
-              onClick={() => {
-                setSearch("");
-                setSearchResult([]);
-              }}
-              type="button"
-              className="text-gray-400 hover:text-white text-sm"
-            >
-              Clear
-            </button>
-          )}
         </form>
 
         {/* Hasil Search */}
@@ -114,8 +119,8 @@ export default function Anime() {
               <div className="flex justify-center items-center py-10">
                 <i className="ph ph-circle-notch animate-spin text-5xl text-white"></i>
               </div>
-            // result
             ) : (
+              // result
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
                 {searchResult.map((item) => (
                   <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
