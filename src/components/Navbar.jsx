@@ -23,8 +23,8 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <a href="#project" className="hover:text-blue-400 duration-300 ease-out">
-              Services
+            <a href="/manga" className="hover:text-blue-400 duration-300 ease-out">
+              Manga
             </a>
           </li>
           <li>
