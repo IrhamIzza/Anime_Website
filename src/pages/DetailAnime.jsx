@@ -6,6 +6,7 @@ export default function DetailAnime() {
   const [anime, setAnime] = useState(null);
   const [loading, setLoading] = useState(true);
   const [characters, setCharacters] = useState([]);
+  const [staff, setStaff] = useState([]);
 
   async function getAnimeDetail() {
     try {
@@ -35,15 +36,30 @@ export default function DetailAnime() {
     }
   }
 
+  async function getStaff() {
+    try {
+      setLoading(true);
+      const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/staff`);
+      const data = await res.json();
+      setStaff(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
   useEffect(() => {
     getAnimeDetail();
     getCharacters();
+    getStaff();
   }, [id]);
 
   //   if (loading) return <Loader fullscreen />;
   //   if (!anime) return <div className="text-white">Anime not found.</div>;
 
-  if (loading || !anime) {
+  if (loading || !anime || !stats) {
     return (
       <div className="bg-gray-900 text-white md:px-20 pt-2 pb-5">
         <div className="flex justify-center items-center h-screen">
@@ -55,12 +71,6 @@ export default function DetailAnime() {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen px-6 md:px-20 py-10">
-      <Link
-        to="/anime"
-        className="text-gray-400 hover:text-white mb-4 inline-block"
-      >
-        ← Back
-      </Link>
       <div className="pb-5">
         <div className="flex flex-col md:flex-row gap-5 items-start">
           <img
@@ -84,8 +94,9 @@ export default function DetailAnime() {
         <p className="text-center text-blue-300 "> RANK : {anime.rank}</p>
       </div>
 
-      <div className="flex flex-1 py-3 gap-5">
-        <div className="bg-gray-800 p-4 rounded-sm w-56">
+      <div className="flex flex-1 py-3 gap-5 items-start">
+        {/* information */}
+        <div className="bg-gray-800 p-4 rounded-sm w-56 hidden md:block">
           <ul className="text-sm text-gray-300 space-y-2">
             {/* <li className="text-gray-400"><strong>INFORMATION</strong></li> */}
             <li>
@@ -141,23 +152,25 @@ export default function DetailAnime() {
             </li>
           </ul>
         </div>
-        <div className="flex flex-1 flex-col gap-1">
-          <div className="text-gray-300 ">Characters</div>
+
+        {/* Characters */}
+        <div className="flex flex-1 flex-col gap-1 md:gap-4">
           <div>
-            <div className="flex flex-wrap gap-3">
+            <div className="text-gray-300 ">Characters</div>
+            <div className="flex flex-wrap gap-3 ">
               {characters.slice(0, 6).map((item) => (
                 <div
                   key={item.character.mal_id}
-                  className="flex card justify-between bg-gray-800 w-md"
+                  className="flex card justify-between bg-gray-800 w-64 md:w-md"
                 >
                   <div className="flex">
                     <img
-                      className="w-20"
+                      className="w-10 md:w-20"
                       src={item.character.images.webp.image_url}
                       alt=""
                     />
                     <div className="p-2">
-                      <h4 className="text-md text-gray-300 font-bold">
+                      <h4 className="text-xs md:text-base text-gray-300 font-bold">
                         {item.character.name}
                       </h4>
                       <p className="text-xs text-gray-400">{item.role}</p>
@@ -165,7 +178,7 @@ export default function DetailAnime() {
                   </div>
                   <div className="flex ">
                     <div className="p-2 ">
-                      <h4 className="text-md text-gray-300 font-bold">
+                      <h4 className="text-xs md:text-base text-gray-300 font-bold">
                         {item.voice_actors[0]?.person.name}
                       </h4>
                       <p className="text-xs text-gray-400">
@@ -173,7 +186,7 @@ export default function DetailAnime() {
                       </p>
                     </div>
                     <img
-                      className="w-20"
+                      className="w-10 md:w-20"
                       src={item.voice_actors[0]?.person.images.jpg.image_url}
                       alt=""
                     />
@@ -182,26 +195,37 @@ export default function DetailAnime() {
               ))}
             </div>
           </div>
+
+          {/* Staff */}
+          <div>
+            <div className="text-gray-300 ">Staff</div>
+            <div className="flex flex-wrap gap-3 ">
+              {staff.slice(0, 4).map((item) => (
+                <div
+                  key={item.person.mal_id}
+                  className="flex card justify-between bg-gray-800 w-64 md:w-md"
+                >
+                  <div className="flex">
+                    <img
+                      className="w-10 md:w-20"
+                      src={item.person.images.jpg.image_url}
+                      alt=""
+                    />
+                    <div className="p-2">
+                      <h4 className="text-xs md:text-base text-gray-300 font-bold">
+                        {item.person.name}
+                      </h4>
+                      <p className="text-xs text-gray-400">{item.positions}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+
         </div>
       </div>
-      {/* <div className="flex flex-col md:flex-row gap-8">
-
-            <img src={anime.images.webp.image_url} alt={anime.title} className="w-full md:w-1/3 rounded-lg shadow-lg" />
-
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold mb-4">{anime.title}</h1>
-              <p className="text-gray-400 mb-3 italic">{anime.title_japanese}</p>
-              <p className="mb-4 text-sm leading-relaxed">{anime.synopsis}</p>
-
-              <ul className="text-sm text-gray-300 space-y-1">
-                <li><strong>Type:</strong> {anime.type}</li>
-                <li><strong>Episodes:</strong> {anime.episodes || "?"}</li>
-                <li><strong>Status:</strong> {anime.status}</li>
-                <li><strong>Score:</strong> ⭐ {anime.score || "N/A"}</li>
-                <li><strong>Rank:</strong> #{anime.rank}</li>
-              </ul>
-            </div>
-          </div> */}
     </div>
   );
 }
