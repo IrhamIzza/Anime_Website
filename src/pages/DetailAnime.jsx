@@ -7,6 +7,7 @@ export default function DetailAnime() {
   const [loading, setLoading] = useState(true);
   const [characters, setCharacters] = useState([]);
   const [staff, setStaff] = useState([]);
+  const [stats, setStats] = useState([]);
 
   async function getAnimeDetail() {
     try {
@@ -49,17 +50,32 @@ export default function DetailAnime() {
     }
   }
 
+  async function getStats() {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `https://api.jikan.moe/v4/anime/${id}/statistics`
+      );
+      const data = await res.json();
+      setStats(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     getAnimeDetail();
     getCharacters();
     getStaff();
+    getStats();
   }, [id]);
 
   //   if (loading) return <Loader fullscreen />;
   //   if (!anime) return <div className="text-white">Anime not found.</div>;
 
-  if (loading || !anime || !stats) {
+  if (loading || !anime || !stats || !stats.scores) {
     return (
       <div className="bg-gray-900 text-white md:px-20 pt-2 pb-5">
         <div className="flex justify-center items-center h-screen">
@@ -69,14 +85,43 @@ export default function DetailAnime() {
     );
   }
 
+  const items = [
+    {
+      label: "Completed",
+      value: stats.completed,
+      color: "bg-green-600",
+    },
+    {
+      label: "Current",
+      value: stats.watching,
+      color: "bg-blue-600",
+    },
+    {
+      label: "Planning",
+      value: stats.plan_to_watch,
+      color: "bg-purple-600",
+    },
+    {
+      label: "Dropped",
+      value: stats.dropped,
+      color: "bg-red-600",
+    },
+    {
+      label: "Plan to Watch",
+      value: stats.plan_to_watch,
+      color: "bg-yellow-600",
+    },
+  ];
+  const total = stats.total;
+
   return (
     <div className="bg-gray-900 text-white min-h-screen px-6 md:px-20 py-10">
       <div className="pb-5">
-        <div className="flex flex-col md:flex-row gap-5 items-start">
+        <div className="flex flex-col md:flex-row gap-5 items-start ">
           <img
             src={anime.images?.webp.image_url}
             alt={anime.title}
-            className="rounded-lg shadow-lg w-56"
+            className="rounded-lg shadow-lg w-56 flex mx-auto"
             // loading="lazy"
           />
 
@@ -90,7 +135,7 @@ export default function DetailAnime() {
         </div>
       </div>
       {/* RANK */}
-      <div className="bg-gray-800 w-56 rounded-sm p-2">
+      <div className="bg-gray-800  md:w-56 rounded-sm p-2 ">
         <p className="text-center text-blue-300 "> RANK : {anime.rank}</p>
       </div>
 
@@ -223,7 +268,55 @@ export default function DetailAnime() {
             </div>
           </div>
 
-
+          {/* Status distribution */}
+          <div className="">
+            <h3 className="text-gray-300"> Status Distribution </h3>
+            <div className="flex gap-2 flex-wrap ">
+              <div className="bg-gray-800 rounded-sm w-64 md:w-md flex flex-col">
+                {/* Label */}
+                <div className="flex flex-wrap gap-2 pt-7 px-2 justify-center md:justify-between">
+                  {items.map((item) => (
+                    <div key={item.label}>
+                      <div
+                        className={`px-2 py-1 rounded-md text-xs font-medium ${item.color} text-white text-center`}
+                      >
+                        {item.label}
+                      </div>
+                      <p className="text-xs opacity-80 ">
+                        {(item.value ?? 0).toLocaleString()} Users
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                {/* PROGRESS BAR */}
+                <div className="flex h-5 rounded-full overflow-hidden bg-gray-700 mt-auto">
+                  {items.map((item) => (
+                    <div
+                      key={item.label}
+                      className={`${item.color} transition-all duration-500`}
+                      style={{
+                        width: `${(item.value / total) * 100}%`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="bg-gray-800 rounded-sm w-64 md:w-md overflow-x-auto items-end flex gap-1 p-3">
+                {stats.scores.map((item) => (
+                  <div key={item.score} className="flex flex-col items-center mx-auto gap-1">
+                    <p className="text-gray-300 text-xs">
+                      {item.votes.toLocaleString()}
+                    </p>
+                    <div
+                      className="w-4 bg-gradient-to-br from-green-500 via-lime-300 to-yellow-400 rounded-full"
+                      style={{ height: `${item.percentage}px` }}
+                    />
+                    <p className="text-xs text-gray-400">{item.score}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

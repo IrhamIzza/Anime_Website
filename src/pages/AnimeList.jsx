@@ -12,8 +12,11 @@ export default function AnimeList() {
       try {
         let url = "https://api.jikan.moe/v4/top/anime?limit=20";
 
-        if (type === "popular") url = "https://api.jikan.moe/v4/top/anime?limit=20&filter=bypopularity";
-        else if (type === "upcoming") url = "https://api.jikan.moe/v4/top/anime?limit=20&filter=upcoming";
+        if (type === "popular")
+          url =
+            "https://api.jikan.moe/v4/top/anime?limit=20&filter=bypopularity";
+        else if (type === "upcoming")
+          url = "https://api.jikan.moe/v4/top/anime?limit=20&filter=upcoming";
         // default (trending) biarkan url aslinya
 
         const res = await fetch(url);
@@ -48,22 +51,34 @@ export default function AnimeList() {
               ← Back
             </Link>
           </div>
-
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
             {anime.map((item) => (
               <div
                 key={item.mal_id}
                 className="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition"
               >
-                <img
-                  src={item.images.jpg.image_url}
-                  alt={item.title}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-lg font-bold">{item.title}</h4>
-                  <p className="text-sm text-gray-400">{item.status}</p>
-                </div>
+                <Link to={`/anime/detail/${item.mal_id}`} key={item.mal_id}>
+                  <img
+                    src={item.images.jpg.image_url}
+                    alt={item.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-400">{item.status}</p>
+                  </div>
+                </Link>
+                {/* <Link to={`/anime/detail/${item.mal_id}`} key={item.mal_id}>
+                  <img
+                    src={item.images.jpg.image_url}
+                    alt={item.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-400">{item.status}</p>
+                  </div>
+                </Link> */}
               </div>
             ))}
           </div>
