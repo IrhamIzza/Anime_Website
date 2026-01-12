@@ -270,50 +270,58 @@ export default function DetailAnime() {
 
           {/* Status distribution */}
           <div className="">
-            <h3 className="text-gray-300"> Status Distribution </h3>
-            <div className="flex gap-2 flex-wrap ">
-              <div className="bg-gray-800 rounded-sm w-64 md:w-md flex flex-col">
-                {/* Label */}
-                <div className="flex flex-wrap gap-2 pt-7 px-2 justify-center md:justify-between">
-                  {items.map((item) => (
-                    <div key={item.label}>
-                      <div
-                        className={`px-2 py-1 rounded-md text-xs font-medium ${item.color} text-white text-center`}
-                      >
-                        {item.label}
+            <div className="flex gap-3 max-w-[900px] items-stretch">
+              <div className="flex-1">
+                <h3 className="text-gray-300"> Status Distribution </h3>
+                <div className="bg-gray-800 rounded-sm w-64 md:w-md flex flex-col h-full">
+                  {/* Label */}
+                  <div className="flex flex-wrap gap-2 pt-7 px-2 justify-center md:justify-between">
+                    {items.map((item) => (
+                      <div key={item.label}>
+                        <div
+                          className={`px-2 py-1 rounded-md text-xs font-medium ${item.color} text-white text-center`}
+                        >
+                          {item.label}
+                        </div>
+                        <p className="text-xs opacity-80 text-center">
+                          {(item.value ?? 0).toLocaleString()} Users
+                        </p>
                       </div>
-                      <p className="text-xs opacity-80 ">
-                        {(item.value ?? 0).toLocaleString()} Users
+                    ))}
+                  </div>
+                  {/* PROGRESS BAR */}
+                  <div className="flex h-5 rounded-full overflow-hidden bg-gray-700 mt-auto">
+                    {items.map((item) => (
+                      <div
+                        key={item.label}
+                        className={`${item.color} transition-all duration-500`}
+                        style={{
+                          width: `${(item.value / total) * 100}%`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-gray-300"> Score Distribution </h3>
+                <div className="bg-gray-800 h-full rounded-sm w-64 md:w-md overflow-x-auto items-end flex gap-1 p-3">
+                  {stats.scores.map((item) => (
+                    <div
+                      key={item.score}
+                      className="flex flex-col items-center mx-auto gap-1"
+                    >
+                      <p className="text-gray-300 text-xs">
+                        {item.votes.toLocaleString()}
                       </p>
+                      <div
+                        className="w-4 bg-gradient-to-br from-green-500 via-lime-300 to-yellow-400 rounded-full"
+                        style={{ height: `${item.percentage}px` }}
+                      />
+                      <p className="text-xs text-gray-400">{item.score}</p>
                     </div>
                   ))}
                 </div>
-                {/* PROGRESS BAR */}
-                <div className="flex h-5 rounded-full overflow-hidden bg-gray-700 mt-auto">
-                  {items.map((item) => (
-                    <div
-                      key={item.label}
-                      className={`${item.color} transition-all duration-500`}
-                      style={{
-                        width: `${(item.value / total) * 100}%`,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="bg-gray-800 rounded-sm w-64 md:w-md overflow-x-auto items-end flex gap-1 p-3">
-                {stats.scores.map((item) => (
-                  <div key={item.score} className="flex flex-col items-center mx-auto gap-1">
-                    <p className="text-gray-300 text-xs">
-                      {item.votes.toLocaleString()}
-                    </p>
-                    <div
-                      className="w-4 bg-gradient-to-br from-green-500 via-lime-300 to-yellow-400 rounded-full"
-                      style={{ height: `${item.percentage}px` }}
-                    />
-                    <p className="text-xs text-gray-400">{item.score}</p>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
