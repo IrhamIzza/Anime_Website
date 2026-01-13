@@ -8,6 +8,8 @@ export default function DetailAnime() {
   const [characters, setCharacters] = useState([]);
   const [staff, setStaff] = useState([]);
   const [stats, setStats] = useState([]);
+  const [episode, setEpisode] = useState([]);
+  const [limit, setLimit] = useState(4);
 
   async function getAnimeDetail() {
     try {
@@ -65,11 +67,22 @@ export default function DetailAnime() {
     }
   }
 
+  async function getEpisode() {
+    try {
+      setLoading(true);
+      const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/episodes`);
+      const data = await res.json();
+      setEpisode(data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
   useEffect(() => {
     getAnimeDetail();
     getCharacters();
     getStaff();
     getStats();
+    getEpisode();
   }, [id]);
 
   //   if (loading) return <Loader fullscreen />;
@@ -134,6 +147,7 @@ export default function DetailAnime() {
           </div>
         </div>
       </div>
+
       {/* RANK */}
       <div className="bg-gray-800  md:w-56 rounded-sm p-2 ">
         <p className="text-center text-blue-300 "> RANK : {anime.rank}</p>
@@ -269,11 +283,11 @@ export default function DetailAnime() {
           </div>
 
           {/* Status distribution */}
-          <div className="">
-            <div className="flex gap-3 max-w-[900px] items-stretch">
-              <div className="flex-1">
-                <h3 className="text-gray-300"> Status Distribution </h3>
-                <div className="bg-gray-800 rounded-sm w-64 md:w-md flex flex-col h-full">
+          <div className="flex gap-3 max-w-[900px] items-stretch">
+            <div className="flex flex-col">
+              <h3 className="text-gray-300"> Status Distribution </h3>
+              <div className="bg-gray-800 rounded-sm w-64 md:w-md flex flex-col h-full">
+                <div className="flex flex-col h-full justify-between">
                   {/* Label */}
                   <div className="flex flex-wrap gap-2 pt-7 px-2 justify-center md:justify-between">
                     {items.map((item) => (
@@ -290,7 +304,7 @@ export default function DetailAnime() {
                     ))}
                   </div>
                   {/* PROGRESS BAR */}
-                  <div className="flex h-5 rounded-full overflow-hidden bg-gray-700 mt-auto">
+                  <div className="flex h-5 mt-4 rounded-full overflow-hidden bg-gray-700">
                     {items.map((item) => (
                       <div
                         key={item.label}
@@ -303,27 +317,59 @@ export default function DetailAnime() {
                   </div>
                 </div>
               </div>
-              <div className="flex-1">
-                <h3 className="text-gray-300"> Score Distribution </h3>
-                <div className="bg-gray-800 h-full rounded-sm w-64 md:w-md overflow-x-auto items-end flex gap-1 p-3">
-                  {stats.scores.map((item) => (
+            </div>
+            <div className="flex flex-col">
+              <h3 className="text-gray-300"> Score Distribution </h3>
+              <div className="bg-gray-800 h-full rounded-sm w-64 md:w-md overflow-x-auto items-end flex gap-1 p-3">
+                {stats.scores.map((item) => (
+                  <div
+                    key={item.score}
+                    className="flex flex-col items-center mx-auto gap-1"
+                  >
+                    <p className="text-gray-300 text-xs">
+                      {item.votes.toLocaleString()}
+                    </p>
                     <div
-                      key={item.score}
-                      className="flex flex-col items-center mx-auto gap-1"
-                    >
-                      <p className="text-gray-300 text-xs">
-                        {item.votes.toLocaleString()}
-                      </p>
-                      <div
-                        className="w-4 bg-gradient-to-br from-green-500 via-lime-300 to-yellow-400 rounded-full"
-                        style={{ height: `${item.percentage}px` }}
-                      />
-                      <p className="text-xs text-gray-400">{item.score}</p>
-                    </div>
-                  ))}
-                </div>
+                      className="w-4 bg-gradient-to-br from-green-500 via-lime-300 to-yellow-400 rounded-full"
+                      style={{ height: `${item.percentage * 1.5}px` }}
+                    />
+                    <p className="text-xs text-gray-400">{item.score}</p>
+                  </div>
+                ))}
               </div>
             </div>
+          </div>
+
+          {/* Episode */}
+          <div className="flex flex-wrap gap-4">
+            {episode.slice(0, limit).map((item) => (
+              <div key={item.mal_id} className="flex flex-col ">
+                <h3 className="text-gray-300 "> Episode </h3>
+                <div className="bg-gray-800 flex flex-col max-w-54 h-full rounded-md overflow-hidden">
+                  <img
+                    src={anime.images?.webp.image_url}
+                    alt=""
+                    className="opacity-70"
+                  />
+                  <div className="p-3 text-sm text-gray-300">
+                    <div>Episode : {item.mal_id}</div>
+                    <div>Title : {item.title}</div>
+                    <div>score : {item.score}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {/* TOMBOL MORE */}
+            {episode.length > limit && (
+              <div className="hidden md:flex mx-auto">
+                <button
+                  onClick={() => setLimit(limit === 4? 8:4)}
+                  className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-500"
+                >
+                  {limit === 4 ? "More" : "Less"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
