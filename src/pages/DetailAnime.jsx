@@ -341,35 +341,37 @@ export default function DetailAnime() {
           </div>
 
           {/* Episode */}
-          <div className="flex flex-wrap gap-4">
-            {episode.slice(0, limit).map((item) => (
-              <div key={item.mal_id} className="flex flex-col ">
-                <h3 className="text-gray-300 "> Episode </h3>
-                <div className="bg-gray-800 flex flex-col max-w-54 h-full rounded-md overflow-hidden">
-                  <img
-                    src={anime.images?.webp.image_url}
-                    alt=""
-                    className="opacity-70"
-                  />
-                  <div className="p-3 text-sm text-gray-300">
-                    <div>Episode : {item.mal_id}</div>
-                    <div>Title : {item.title}</div>
-                    <div>score : {item.score}</div>
+          <div>
+            <h3 className="text-gray-300 "> Episode </h3>
+            <div className="flex flex-wrap gap-3 max-w-[900px]">
+              {episode.slice(0, limit).map((item) => (
+                <div key={item.mal_id} className="flex flex-col ">
+                  <div className="bg-gray-800 flex flex-col max-w-54 h-full rounded-md overflow-hidden">
+                    <img
+                      src={anime.images?.webp.image_url}
+                      alt=""
+                      className="opacity-70"
+                    />
+                    <div className="p-3 text-sm text-gray-300">
+                      <div>Episode : {item.mal_id}</div>
+                      <div>Title : {item.title}</div>
+                      <div>score : {item.score}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-            {/* TOMBOL MORE */}
-            {episode.length > limit && (
-              <div className="hidden md:flex mx-auto">
-                <button
-                  onClick={() => setLimit(limit === 4? 8:4)}
-                  className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-500"
-                >
-                  {limit === 4 ? "More" : "Less"}
-                </button>
-              </div>
-            )}
+              ))}
+              {/* TOMBOL MORE */}
+              {episode.length > limit && (
+                <div className="hidden md:flex ml-auto mt-[-4px]">
+                  <p
+                    onClick={() => setLimit(limit === 4 ? 8 : 4)}
+                    className="text-sm rounded-md  text-gray-400 cursor-pointer"
+                  >
+                    {limit === 4 ? "More >>" : "Less <<"}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
