@@ -10,6 +10,7 @@ export default function DetailAnime() {
   const [stats, setStats] = useState([]);
   const [episode, setEpisode] = useState([]);
   const [limit, setLimit] = useState(4);
+  const [recommendations, setRecommendations] = useState([]);
 
   async function getAnimeDetail() {
     try {
@@ -70,19 +71,36 @@ export default function DetailAnime() {
   async function getEpisode() {
     try {
       setLoading(true);
-      const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/episodes`);
+      const res = await fetch(
+        `https://api.jikan.moe/v4/anime/${id}/videos/episodes`
+      );
       const data = await res.json();
       setEpisode(data.data);
     } catch (error) {
       console.error(error);
     }
   }
+
+  async function getRecommendations() {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `https://api.jikan.moe/v4/anime/${id}/recommendations`
+      );
+      const data = await res.json();
+      setRecommendations(data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     getAnimeDetail();
     getCharacters();
     getStaff();
     getStats();
     getEpisode();
+    getRecommendations();
   }, [id]);
 
   //   if (loading) return <Loader fullscreen />;
@@ -341,21 +359,21 @@ export default function DetailAnime() {
           </div>
 
           {/* Episode */}
+          {episode.item && 
           <div>
             <h3 className="text-gray-300 "> Episode </h3>
             <div className="flex flex-wrap gap-3 max-w-[900px]">
               {episode.slice(0, limit).map((item) => (
                 <div key={item.mal_id} className="flex flex-col ">
-                  <div className="bg-gray-800 flex flex-col max-w-54 h-full rounded-md overflow-hidden">
+                  <div className="bg-gray-800 flex flex-col w-54 h-full rounded-md overflow-hidden">
                     <img
-                      src={anime.images?.webp.image_url}
+                      src={item.images?.jpg.image_url}
                       alt=""
                       className="opacity-70"
                     />
-                    <div className="p-3 text-sm text-gray-300">
-                      <div>Episode : {item.mal_id}</div>
-                      <div>Title : {item.title}</div>
-                      <div>score : {item.score}</div>
+                    <div className="p-3 text-sm text-center text-gray-300">
+                      <div>{item.episode}</div>
+                      <div className="line-clamp-1">{item.title}</div>
                     </div>
                   </div>
                 </div>
@@ -371,6 +389,32 @@ export default function DetailAnime() {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+          }
+
+          {/* Recommendations */}
+          <div>
+            <h3 className="text-gray-300 "> Recommendations </h3>
+            <div className="flex flex-wrap gap-3 max-w-[900px]">
+              {recommendations.slice(0, 5).map((item) => (
+                <Link
+                  key={item.entry.mal_id}
+                  to={`/anime/detail/${item.entry.mal_id}`}
+                  className="flex flex-col"
+                >
+                  <div className="bg-gray-800 flex flex-col w-42 h-full rounded-md overflow-hidden hover:scale-[1.03] transition-all">
+                    <img
+                      src={item.entry.images?.webp.image_url}
+                      alt={item.entry.title}
+                      className="opacity-70 h-52 object-cover"
+                    />
+                    <div className="p-3 text-center text-gray-300">
+                      <div className="line-clamp-2" >{item.entry.title}</div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
