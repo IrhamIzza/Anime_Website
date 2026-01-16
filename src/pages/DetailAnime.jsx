@@ -9,9 +9,10 @@ export default function DetailAnime() {
   const [staff, setStaff] = useState([]);
   const [stats, setStats] = useState([]);
   const [episode, setEpisode] = useState([]);
+  const [episode2, setEpisode2] = useState([]);
   const [limit, setLimit] = useState(4);
   const [recommendations, setRecommendations] = useState([]);
-
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   async function getAnimeDetail() {
     try {
       setLoading(true);
@@ -20,9 +21,7 @@ export default function DetailAnime() {
       setAnime(data.data);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   }
 
   async function getCharacters() {
@@ -35,9 +34,7 @@ export default function DetailAnime() {
       setCharacters(data.data);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   }
 
   async function getStaff() {
@@ -48,9 +45,7 @@ export default function DetailAnime() {
       setStaff(data.data);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   }
 
   async function getStats() {
@@ -63,19 +58,19 @@ export default function DetailAnime() {
       setStats(data.data);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   }
 
   async function getEpisode() {
     try {
-      setLoading(true);
-      const res = await fetch(
-        `https://api.jikan.moe/v4/anime/${id}/videos/episodes`
-      );
-      const data = await res.json();
-      setEpisode(data.data);
+      const [res1, res2] = await Promise.all([
+        fetch(`https://api.jikan.moe/v4/anime/${id}/videos/episodes`),
+        fetch(`https://api.jikan.moe/v4/anime/${id}/episodes`),
+      ]);
+      const data1 = await res1.json();
+      const data2 = await res2.json();
+      setEpisode(data1.data);
+      setEpisode2(data2.data);
     } catch (error) {
       console.error(error);
     }
@@ -95,18 +90,20 @@ export default function DetailAnime() {
   }
 
   useEffect(() => {
-    getAnimeDetail();
-    getCharacters();
-    getStaff();
-    getStats();
-    getEpisode();
-    getRecommendations();
+    async function fetchAll() {      
+      await getAnimeDetail();
+      await getCharacters();
+      await getStaff();
+      // await delay(300);
+      await getStats();
+      await getEpisode();
+      await getRecommendations();
+      setLoading(false);
+    }
+    fetchAll();
   }, [id]);
 
-  //   if (loading) return <Loader fullscreen />;
-  //   if (!anime) return <div className="text-white">Anime not found.</div>;
-
-  if (loading || !anime || !stats || !stats.scores) {
+  if (loading || !anime || !stats || !stats.scores || !episode || !episode2 || !recommendations) {
     return (
       <div className="bg-gray-900 text-white md:px-20 pt-2 pb-5">
         <div className="flex justify-center items-center h-screen">
@@ -359,39 +356,74 @@ export default function DetailAnime() {
           </div>
 
           {/* Episode */}
-          {episode.item && 
-          <div>
-            <h3 className="text-gray-300 "> Episode </h3>
-            <div className="flex flex-wrap gap-3 max-w-[900px]">
-              {episode.slice(0, limit).map((item) => (
-                <div key={item.mal_id} className="flex flex-col ">
-                  <div className="bg-gray-800 flex flex-col w-54 h-full rounded-md overflow-hidden">
-                    <img
-                      src={item.images?.jpg.image_url}
-                      alt=""
-                      className="opacity-70"
-                    />
-                    <div className="p-3 text-sm text-center text-gray-300">
-                      <div>{item.episode}</div>
-                      <div className="line-clamp-1">{item.title}</div>
+          {episode.length > 0 ? (
+            <div>
+              <h3 className="text-gray-300 "> Episode </h3>
+              <div className="flex flex-wrap gap-3 max-w-[900px]">
+                {episode.slice(0, limit).map((item) => (
+                  <div key={item.mal_id} className="flex flex-col ">
+                    <div className="bg-gray-800 flex flex-col w-54 h-full rounded-md overflow-hidden">
+                      <img
+                        src={item.images.jpg.image_url? item.images.jpg.image_url : anime.images.jpg.image_url}
+                        alt=""
+                        className="opacity-70"
+                      />
+                      <div className="p-3 text-sm text-center text-gray-300">
+                        <div>{item.episode}</div>
+                        <div className="line-clamp-1">{item.title}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-              {/* TOMBOL MORE */}
-              {episode.length > limit && (
-                <div className="hidden md:flex ml-auto mt-[-4px]">
-                  <p
-                    onClick={() => setLimit(limit === 4 ? 8 : 4)}
-                    className="text-sm rounded-md  text-gray-400 cursor-pointer"
-                  >
-                    {limit === 4 ? "More >>" : "Less <<"}
-                  </p>
-                </div>
-              )}
+                ))}
+                {/* TOMBOL MORE */}
+                {episode.length > limit && (
+                  <div className="hidden md:flex ml-auto mt-[-4px]">
+                    <p
+                      onClick={() => setLimit(limit === 4 ? 8 : 4)}
+                      className="text-sm rounded-md  text-gray-400 cursor-pointer"
+                    >
+                      {limit === 4 ? "More >>" : "Less <<"}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          }
+          ) : episode2.length > 0 ? (
+            <div>
+              <h3 className="text-gray-300 "> Episode </h3>
+              <div className="flex flex-wrap gap-3 max-w-[900px]">
+                {episode2.slice(0, limit).map((item) => (
+                  <div key={item.mal_id} className="flex flex-col ">
+                    <div className="bg-gray-800 flex flex-col w-54 h-full rounded-md overflow-hidden">
+                      <img
+                        src={anime.images?.jpg.image_url}
+                        alt=""
+                        className="opacity-70"
+                      />
+                      <div className="p-3 text-sm text-center text-gray-300">
+                        <div>{item.episode}</div>
+                        <div className="line-clamp-1">Episode {item.mal_id}</div>
+                        <div className="line-clamp-1">{item.title}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {/* TOMBOL MORE */}
+                {episode2.length > limit && (
+                  <div className="hidden md:flex ml-auto mt-[-4px]">
+                    <p
+                      onClick={() => setLimit(limit === 4 ? 8 : 4)}
+                      className="text-sm rounded-md  text-gray-400 cursor-pointer"
+                    >
+                      {limit === 4 ? "More >>" : "Less <<"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p></p>
+          )}
 
           {/* Recommendations */}
           <div>
@@ -410,7 +442,7 @@ export default function DetailAnime() {
                       className="opacity-70 h-52 object-cover"
                     />
                     <div className="p-3 text-center text-gray-300">
-                      <div className="line-clamp-2" >{item.entry.title}</div>
+                      <div className="line-clamp-2">{item.entry.title}</div>
                     </div>
                   </div>
                 </Link>
