@@ -12,7 +12,7 @@ export default function DetailAnime() {
   const [episode2, setEpisode2] = useState([]);
   const [limit, setLimit] = useState(4);
   const [recommendations, setRecommendations] = useState([]);
-  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   async function getAnimeDetail() {
     try {
       setLoading(true);
@@ -21,7 +21,7 @@ export default function DetailAnime() {
       setAnime(data.data);
     } catch (error) {
       console.error(error);
-    } 
+    }
   }
 
   async function getCharacters() {
@@ -34,7 +34,7 @@ export default function DetailAnime() {
       setCharacters(data.data);
     } catch (error) {
       console.error(error);
-    } 
+    }
   }
 
   async function getStaff() {
@@ -45,7 +45,7 @@ export default function DetailAnime() {
       setStaff(data.data);
     } catch (error) {
       console.error(error);
-    } 
+    }
   }
 
   async function getStats() {
@@ -58,7 +58,7 @@ export default function DetailAnime() {
       setStats(data.data);
     } catch (error) {
       console.error(error);
-    } 
+    }
   }
 
   async function getEpisode() {
@@ -90,11 +90,11 @@ export default function DetailAnime() {
   }
 
   useEffect(() => {
-    async function fetchAll() {      
+    async function fetchAll() {
       await getAnimeDetail();
       await getCharacters();
       await getStaff();
-      // await delay(300);
+      await delay(400);
       await getStats();
       await getEpisode();
       await getRecommendations();
@@ -103,7 +103,15 @@ export default function DetailAnime() {
     fetchAll();
   }, [id]);
 
-  if (loading || !anime || !stats || !stats.scores || !episode || !episode2 || !recommendations) {
+  if (
+    loading ||
+    !anime ||
+    !stats ||
+    !stats.scores ||
+    !episode ||
+    !episode2 ||
+    !recommendations
+  ) {
     return (
       <div className="bg-gray-900 text-white md:px-20 pt-2 pb-5">
         <div className="flex justify-center items-center h-screen">
@@ -228,14 +236,14 @@ export default function DetailAnime() {
         </div>
 
         {/* Characters */}
-        <div className="flex flex-1 flex-col gap-1 md:gap-4">
+        <div className="flex flex-1 flex-col gap-5 w-full md:gap-4">
           <div>
             <div className="text-gray-300 ">Characters</div>
-            <div className="flex flex-wrap gap-3 ">
+            <div className="flex flex-wrap gap-3 w-full">
               {characters.slice(0, 6).map((item) => (
                 <div
                   key={item.character.mal_id}
-                  className="flex card justify-between bg-gray-800 w-64 md:w-md"
+                  className="flex card justify-between bg-gray-800 w-full md:w-md"
                 >
                   <div className="flex">
                     <img
@@ -271,13 +279,13 @@ export default function DetailAnime() {
           </div>
 
           {/* Staff */}
-          <div>
+          <div className="w-full">
             <div className="text-gray-300 ">Staff</div>
-            <div className="flex flex-wrap gap-3 ">
+            <div className="flex flex-wrap gap-3 w-full">
               {staff.slice(0, 4).map((item) => (
                 <div
                   key={item.person.mal_id}
-                  className="flex card justify-between bg-gray-800 w-64 md:w-md"
+                  className="flex card justify-between bg-gray-800 w-full md:w-md"
                 >
                   <div className="flex">
                     <img
@@ -298,10 +306,10 @@ export default function DetailAnime() {
           </div>
 
           {/* Status distribution */}
-          <div className="flex gap-3 max-w-[900px] items-stretch">
-            <div className="flex flex-col">
+          <div className="flex gap-3 w-full flex-wrap items-stretch">
+            <div className="flex flex-col md:w-md">
               <h3 className="text-gray-300"> Status Distribution </h3>
-              <div className="bg-gray-800 rounded-sm w-64 md:w-md flex flex-col h-full">
+              <div className="bg-gray-800 rounded-sm w-full md:w-md flex flex-col h-full">
                 <div className="flex flex-col h-full justify-between">
                   {/* Label */}
                   <div className="flex flex-wrap gap-2 pt-7 px-2 justify-center md:justify-between">
@@ -333,9 +341,10 @@ export default function DetailAnime() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col">
+
+            <div className="flex flex-col w-full md:w-md">
               <h3 className="text-gray-300"> Score Distribution </h3>
-              <div className="bg-gray-800 h-full rounded-sm w-64 md:w-md overflow-x-auto items-end flex gap-1 p-3">
+              <div className="bg-gray-800 h-full rounded-sm w-full md:w-md overflow-x-auto items-end flex gap-1 p-3">
                 {stats.scores.map((item) => (
                   <div
                     key={item.score}
@@ -357,21 +366,26 @@ export default function DetailAnime() {
 
           {/* Episode */}
           {episode.length > 0 ? (
-            <div>
+            <div className="w-full">
               <h3 className="text-gray-300 "> Episode </h3>
               <div className="flex flex-wrap gap-3 max-w-[900px]">
                 {episode.slice(0, limit).map((item) => (
-                  <div key={item.mal_id} className="flex flex-col ">
-                    <div className="bg-gray-800 flex flex-col w-54 h-full rounded-md overflow-hidden">
-                      <img
-                        src={item.images.jpg.image_url? item.images.jpg.image_url : anime.images.jpg.image_url}
-                        alt=""
-                        className="opacity-70"
-                      />
-                      <div className="p-3 text-sm text-center text-gray-300">
-                        <div>{item.episode}</div>
-                        <div className="line-clamp-1">{item.title}</div>
-                      </div>
+                  <div
+                    className="bg-gray-800 flex flex-col w-full md:w-54 h-full rounded-md overflow-hidden"
+                    key={item.mal_id}
+                  >
+                    <img
+                      src={
+                        item.images.jpg.image_url
+                          ? item.images.jpg.image_url
+                          : anime.images.jpg.image_url
+                      }
+                      alt=""
+                      className="opacity-70 h-36 object-cover md:h-full"
+                    />
+                    <div className="p-3 text-sm text-center text-gray-300">
+                      <div>{item.episode}</div>
+                      <div className="line-clamp-1">{item.title}</div>
                     </div>
                   </div>
                 ))}
@@ -389,22 +403,23 @@ export default function DetailAnime() {
               </div>
             </div>
           ) : episode2.length > 0 ? (
-            <div>
+            <div className="w-full">
               <h3 className="text-gray-300 "> Episode </h3>
               <div className="flex flex-wrap gap-3 max-w-[900px]">
                 {episode2.slice(0, limit).map((item) => (
-                  <div key={item.mal_id} className="flex flex-col ">
-                    <div className="bg-gray-800 flex flex-col w-54 h-full rounded-md overflow-hidden">
-                      <img
-                        src={anime.images?.jpg.image_url}
-                        alt=""
-                        className="opacity-70"
-                      />
-                      <div className="p-3 text-sm text-center text-gray-300">
-                        <div>{item.episode}</div>
-                        <div className="line-clamp-1">Episode {item.mal_id}</div>
-                        <div className="line-clamp-1">{item.title}</div>
-                      </div>
+                  <div
+                    key={item.mal_id}
+                    className="bg-gray-800 flex flex-col w-full md:w-54 rounded-md overflow-hidden"
+                  >
+                    <img
+                      src={anime.images?.jpg.image_url}
+                      alt=""
+                      className="opacity-70 h-36 object-cover"
+                    />
+                    <div className="p-3 text-sm text-center text-gray-300">
+                      <div>{item.episode}</div>
+                      <div className="line-clamp-1">Episode {item.mal_id}</div>
+                      <div className="line-clamp-1">{item.title}</div>
                     </div>
                   </div>
                 ))}
@@ -428,22 +443,20 @@ export default function DetailAnime() {
           {/* Recommendations */}
           <div>
             <h3 className="text-gray-300 "> Recommendations </h3>
-            <div className="flex flex-wrap gap-3 max-w-[900px]">
+            <div className="flex flex-wrap h-full items-stretch gap-3 max-w-[900px]">
               {recommendations.slice(0, 5).map((item) => (
                 <Link
                   key={item.entry.mal_id}
                   to={`/anime/detail/${item.entry.mal_id}`}
-                  className="flex flex-col"
+                  className="flex flex-col bg-gray-800 w-full md:w-42 rounded-md overflow-hidden hover:scale-[1.03] transition-all"
                 >
-                  <div className="bg-gray-800 flex flex-col w-42 h-full rounded-md overflow-hidden hover:scale-[1.03] transition-all">
-                    <img
-                      src={item.entry.images?.webp.image_url}
-                      alt={item.entry.title}
-                      className="opacity-70 h-52 object-cover"
-                    />
-                    <div className="p-3 text-center text-gray-300">
-                      <div className="line-clamp-2">{item.entry.title}</div>
-                    </div>
+                  <img
+                    src={item.entry.images?.webp.image_url}
+                    alt={item.entry.title}
+                    className="opacity-80 h-36 md:h-52 object-cover"
+                  />
+                  <div className="p-3 text-center text-gray-300">
+                    <div className="line-clamp-2">{item.entry.title}</div>
                   </div>
                 </Link>
               ))}
